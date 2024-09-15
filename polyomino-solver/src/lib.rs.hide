@@ -1,0 +1,124 @@
+use wasm_bindgen::prelude::*;
+use serde::{Serialize, Deserialize};
+use std::collections::HashSet;
+
+
+// impl RefFromWasmAbi for Vec<Polyomino> {
+//     type Abi = JsValue;
+
+//     fn from_abi(js_value: JsValue) -> Result<Self, JsValue> {
+//         Ok(js_value.into_serde())
+//     }
+
+//     fn to_abi(&self) -> JsValue {
+//         JsValue::from_serde(self).unwrap()
+//     }
+// }
+
+#[wasm_bindgen]
+pub struct Polyomino {
+    blocks: Vec<(usize, usize)>,
+}
+
+#[wasm_bindgen]
+impl Polyomino {
+    // ... existing methods ...
+
+    impl RefFromWasmAbi for Polyomino {
+        type Abi = JsValue;
+
+        fn from_abi(js_value: JsValue) -> Result<Self, JsValue> {
+            Ok(Polyomino {
+                blocks: js_value.into_serde::<JsArray<JsNumber>>()?.into_iter().map(|v| (v.as_f64().unwrap() as usize, v.as_f64().unwrap() as usize)).collect(),
+            })
+        }
+
+        fn to_abi(&self) -> JsValue {
+            JsValue::from_serde(&self.blocks).unwrap()
+        }
+    }
+}
+#[wasm_bindgen]
+pub struct Board {
+    width: usize,
+    height: usize,
+    grid: Vec<bool>,
+}
+
+#[wasm_bindgen]
+impl Board {
+    #[wasm_bindgen(constructor)]
+    pub fn new(width: usize, height: usize) -> Board {
+        Board {
+            width,
+            height,
+            grid: vec![false; width * height],
+        }
+    }
+
+    /// Attempts to place a polyomino at position (x, y)
+    pub fn place_polyomino(&mut self, x: usize, y: usize, polyomino: &Polyomino) -> bool {
+        if self.can_place(x, y, polyomino) {
+            for &(dx, dy) in polyomino.blocks.iter() {
+                self.grid[(y + dy) * self.width + (x + dx)] = true;
+            }
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Checks if a polyomino can be placed at position (x, y)
+    pub fn can_place(&self, x: usize, y: usize, polyomino: &Polyomino) -> bool {
+        for &(dx, dy) in polyomino.blocks.iter() {
+            if x + dx >= self.width || y + dy >= self.height || self.grid[(y + dy) * self.width + (x + dx)] {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Removes a polyomino from position (x, y)
+    pub fn remove_polyomino(&mut self, x: usize, y: usize, polyomino: &Polyomino) {
+        for &(dx, dy) in polyomino.blocks.iter() {
+            self.grid[(y + dy) * self.width + (x + dx)] = false;
+        }
+    }
+
+    /// Clears the board
+    pub fn clear(&mut self) {
+        for cell in self.grid.iter_mut() {
+            *cell = false;
+        }
+    }
+
+    /// Tries to solve the board by placing all polyominoes
+    /// This is a backtracking algorithm that attempts to place all polyominoes
+    pub fn solve(&mut self, polyominoes: &Vec<Polyomino>, current: usize) -> bool {
+        if current >= polyominoes.len() {
+            // All polyominoes are placed
+            return true;
+        }
+
+        let polyomino = &polyominoes[current];
+
+        // Try to place the current polyomino at all possible positions
+        for y in 0..self.height {
+            for x in 0..self.width {
+                if self.place_polyomino(x, y, polyomino) {
+                    // Recursively try to place the next polyomino
+                    if self.solve(polyominoes, current + 1) {
+                        return true;
+                    }
+                    // Backtrack if placing the next polyomino fails
+                    self.remove_polyomino(x, y, polyomino);
+                }
+            }
+        }
+
+        // If we cannot place the current polyomino, return false
+        false
+    }
+}
+
+

@@ -1,3 +1,3 @@
-Attempt to reboot my polyform app using GPT 4o.
 Nothing to see yet.
-I will describe my progress in [journal.md](./journal.md)
+Attempt to reboot my [polyform](https://github.com/cognominal/polyforms) app using GPT 4o.
+I will describe my probem and progress in [journal.md](./journal.md)

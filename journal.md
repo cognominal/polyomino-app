@@ -21,7 +21,7 @@ Note : so far, within and outside vscode I am using
 phind.com. I have been unable to use my openai credentials
 in chatGPT extensions.
 
-I am trying to follow the instruction of 4o.
+I am trying to follow the instruction of chatGPT 4o.
 
 <details>
 <summary>wasm-pack build --target web</summary>
@@ -152,3 +152,8 @@ Caused by: failed to execute `cargo build`: exited with exit status: 101
 ➜  polyomino-solver git:(master) ✗ 
 </code>
 </details>
+
+For now, I focus on the rust side, generating the pentominos and somehow test it. I rename `lib.rs`into `lib.rs.hide`.
+Phind generated some code.
+I need to understanding it and compile it. `rotate()`
+generates an error. It should not use negative index.

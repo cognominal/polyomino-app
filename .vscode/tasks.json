@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cargo",
+            "label": "build",
+            "command": "build",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "cargo",
+            "label": "run generate",
+            "command": "run",
+            "args": ["--bin", "polyomino-solver", "generate-pentominoes"],
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/polyomino-solver"
+            }            
+        },
+        {
+            "type": "cargo",
+            "label": "test",
+            "command": "test",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        }
+    ]
+}
