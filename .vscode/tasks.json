@@ -29,7 +29,7 @@
                 "clear": false
             },
             "options": {
-                "cwd": "${workspaceFolder}/polyomino-solver"
+                "cwd": "${workspaceFolder}/backend"
             }            
         },
         {
