@@ -17,7 +17,7 @@
             "type": "cargo",
             "label": "run generate",
             "command": "run",
-            "args": ["--bin", "polyomino-solver", "generate-pentominoes"],
+            "args": ["--bin", "polyominoSolver", "generate-pentominoes"],
             "problemMatcher": [
                 "$rustc"
             ],
